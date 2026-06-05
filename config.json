@@ -1,0 +1,64 @@
+{
+  "token": "TON_TOKEN_ICI",
+  "clientId": "TON_CLIENT_ID_ICI",
+  "guildId": "TON_GUILD_ID_ICI",
+
+  "welcome": {
+    "enabled": true,
+    "channelId": "ID_SALON_BIENVENUE",
+    "embedColor": "#5865F2",
+    "title": "Bienvenue sur le serveur ! 🎉",
+    "message": "Salut {user} ! Bienvenue sur **{server}** !\nTu es le **{memberCount}e** membre.",
+    "footer": "Bonne aventure parmi nous !",
+    "showAvatar": true,
+    "dmOnJoin": false,
+    "dmMessage": "Bienvenue sur {server} ! N'hésite pas à lire les règles."
+  },
+
+  "goodbye": {
+    "enabled": true,
+    "channelId": "ID_SALON_AUREVOIR",
+    "embedColor": "#ED4245",
+    "title": "Au revoir 👋",
+    "message": "**{username}** vient de quitter le serveur. Il reste **{memberCount}** membres.",
+    "footer": "On espère le revoir bientôt !"
+  },
+
+  "tickets": {
+    "enabled": true,
+    "panelChannelId": "ID_SALON_PANEL_TICKET",
+    "logChannelId": "ID_SALON_LOGS_TICKET",
+    "staffRoleId": "ID_ROLE_STAFF",
+    "categoryWaiting": "ID_CATEGORIE_EN_ATTENTE",
+    "categoryOpen": "ID_CATEGORIE_OUVERT",
+    "categoryClosed": "ID_CATEGORIE_FERME",
+    "embedColor": "#5865F2",
+    "maxTicketsPerUser": 1,
+    "deleteDelay": 5,
+    "panelTitle": "🎫 Support",
+    "panelDescription": "Clique sur le bouton ci-dessous pour ouvrir un ticket.\nNotre équipe te répondra dès que possible.",
+    "transcriptEnabled": true,
+    "pingStaffOnOpen": true,
+    "ticketOpenMessage": "Bonjour {user} ! 👋\nMerci d'avoir ouvert un ticket. Notre équipe va te répondre rapidement.\n\nExplique-nous ton problème ci-dessous.",
+    "reasons": [
+      { "label": "Support général", "emoji": "🆘", "value": "support" },
+      { "label": "Signalement", "emoji": "🚨", "value": "report" },
+      { "label": "Partenariat", "emoji": "🤝", "value": "partnership" },
+      { "label": "Autre", "emoji": "❓", "value": "other" }
+    ]
+  },
+
+  "autoRole": {
+    "enabled": false,
+    "roleId": "ID_ROLE_AUTO"
+  },
+
+  "logs": {
+    "enabled": true,
+    "channelId": "ID_SALON_LOGS",
+    "logJoins": true,
+    "logLeaves": true,
+    "logBans": true,
+    "logMessageDelete": false
+  }
+}
