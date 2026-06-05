@@ -1,32 +1,57 @@
-const { EmbedBuilder } = require('discord.js');
-const { formatMessage } = require('../utils/helpers');
+const { closeTicket, reopenTicket, deleteTicket, createTicket } = require('../utils/ticketManager');
 
 module.exports = {
-  name: 'guildMemberRemove',
-  async execute(member, client) {
-    const cfg = client.config.goodbye;
-    if (!cfg.enabled) return;
+  name: 'interactionCreate',
+  async execute(interaction, client) {
 
-    const channel = member.guild.channels.cache.get(cfg.channelId);
-    if (!channel) return;
+    if (interaction.isChatInputCommand()) {
+      const command = client.commands.get(interaction.commandName);
+      if (!command) return;
 
-    const vars = {
-      user: `<@${member.id}>`,
-      username: member.user.username,
-      server: member.guild.name,
-      memberCount: member.guild.memberCount,
-    };
+      try {
+        await command.execute(interaction, client);
+      } catch (err) {
+        console.error(`Erreur commande /${interaction.commandName}:`, err);
+        const reply = { content: '❌ Une erreur est survenue.', ephemeral: true };
+        if (interaction.replied || interaction.deferred) {
+          await interaction.followUp(reply);
+        } else {
+          await interaction.reply(reply);
+        }
+      }
+      return;
+    }
 
-    const embed = new EmbedBuilder()
-      .setColor(cfg.embedColor)
-      .setTitle(cfg.title)
-      .setDescription(formatMessage(cfg.message, vars))
-      .setFooter({ text: cfg.footer })
-      .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
-      .setTimestamp();
+    if (interaction.isButton()) {
+      const { customId } = interaction;
+      const isTicketChannel = interaction.channel?.topic?.startsWith('ticket:');
 
-    await channel.send({ embeds: [embed] }).catch(err => {
-      console.error(`❌ Impossible d'envoyer le message d'au revoir (salon: ${cfg.channelId}) :`, err.message);
-    });
+      if (customId === 'ticket_open') {
+        return createTicket(interaction);
+      }
+
+      if (customId === 'ticket_close') {
+        if (!isTicketChannel) return interaction.reply({ content: '❌ Ce n\'est pas un ticket.', ephemeral: true });
+        return closeTicket(interaction);
+      }
+
+      if (customId === 'ticket_reopen') {
+        if (!isTicketChannel) return interaction.reply({ content: '❌ Ce n\'est pas un ticket.', ephemeral: true });
+        return reopenTicket(interaction);
+      }
+
+      if (customId === 'ticket_delete') {
+        if (!isTicketChannel) return interaction.reply({ content: '❌ Ce n\'est pas un ticket.', ephemeral: true });
+
+        const staffRoleId = client.config.tickets.staffRoleId;
+        const hasRole = interaction.member.roles.cache.has(staffRoleId);
+        const isAdmin = interaction.member.permissions.has('Administrator');
+        if (!hasRole && !isAdmin) {
+          return interaction.reply({ content: '❌ Seul le staff peut supprimer un ticket.', ephemeral: true });
+        }
+
+        return deleteTicket(interaction);
+      }
+    }
   },
 };
