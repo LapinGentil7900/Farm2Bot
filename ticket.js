@@ -2,7 +2,8 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   ActionRowBuilder,
-  StringSelectMenuBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   PermissionsBitField,
 } = require('discord.js');
 
@@ -32,21 +33,16 @@ module.exports = {
         .setColor(cfg.embedColor)
         .setTitle(cfg.panelTitle)
         .setDescription(cfg.panelDescription)
-        .setFooter({ text: 'Sélectionne la raison de ta demande.' })
+        .setFooter({ text: 'Clique sur le bouton pour ouvrir un ticket.' })
         .setTimestamp();
 
-      const select = new StringSelectMenuBuilder()
-        .setCustomId('ticket_reason')
-        .setPlaceholder('📋 Sélectionne une raison...')
-        .addOptions(
-          cfg.reasons.map(r => ({
-            label: r.label,
-            value: r.value,
-            emoji: r.emoji,
-          }))
-        );
+      const btn = new ButtonBuilder()
+        .setCustomId('ticket_open')
+        .setLabel('Créer un ticket')
+        .setEmoji('🎫')
+        .setStyle(ButtonStyle.Primary);
 
-      const row = new ActionRowBuilder().addComponents(select);
+      const row = new ActionRowBuilder().addComponents(btn);
 
       await interaction.channel.send({ embeds: [embed], components: [row] });
       await interaction.reply({ content: '✅ Panel envoyé !', ephemeral: true });
